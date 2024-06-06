@@ -34,14 +34,6 @@ export const ExtensionList: FunctionComponent<ExtensionListProps> = props => {
 
     useEffect(() => {
         enableLoadMore.current = true;
-        return () => {
-            abortController.abort();
-            clearTimeout(cancellationToken.timeout);
-            enableLoadMore.current = false;
-        };
-    }, []);
-
-    useEffect(() => {
         filterSize.current = props.filter.size || filterSize.current;
         debounce(
             async () => {
@@ -73,6 +65,11 @@ export const ExtensionList: FunctionComponent<ExtensionListProps> = props => {
             cancellationToken,
             props.debounceTime
         );
+        return () => {
+            abortController.abort();
+            clearTimeout(cancellationToken.timeout);
+            enableLoadMore.current = false;
+        };
     }, [props.filter.category, props.filter.query, props.filter.sortBy, props.filter.sortOrder, props.debounceTime]);
 
     const loadMore = async (p: number): Promise<void> => {
